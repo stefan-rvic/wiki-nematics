@@ -6,16 +6,20 @@ import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DataStreamJob {
-
+	private static final Logger LOG = LoggerFactory.getLogger(DataStreamJob.class);
 
 	public static void main(String[] args) throws Exception {
 		final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
+        env.setParallelism(2);
+        env.enableCheckpointing(5000);
 
 		KafkaSource<String> source = KafkaSource.<String>builder()
-				.setBootstrapServers("localhost:9092")
+				.setBootstrapServers("broker:19092")
 				.setTopics("wikipedia.changes")
 				.setGroupId("flink-consumer-group")
 				.setStartingOffsets(OffsetsInitializer.earliest())
@@ -28,7 +32,10 @@ public class DataStreamJob {
 				"Kafka Source"
 		);
 
-		stream.print();
+        stream.map(record -> {
+            LOG.info("Received record: {}", record);
+            return record;
+        }).print();
 
 		env.execute("Simple Kafka Consumer");
 	}

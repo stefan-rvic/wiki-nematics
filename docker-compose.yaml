@@ -23,31 +23,34 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
       KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
       KAFKA_NUM_PARTITIONS: 3
-    networks:
-      - kafka-flink-network
+
+
   jobmanager:
     image: flink:java17
     ports:
       - "8081:8081"
     command: jobmanager
+    container_name: flink-jobmanager
     environment:
       - |
         FLINK_PROPERTIES=
         jobmanager.rpc.address: jobmanager        
-    networks:
-      - kafka-flink-network
+
+
   taskmanager:
     image: flink:java17
     depends_on:
       - jobmanager
     command: taskmanager
+    container_name: flink-taskmanager
     scale: 1
     environment:
       - |
         FLINK_PROPERTIES=
         jobmanager.rpc.address: jobmanager
         taskmanager.numberOfTaskSlots: 2    
-  
+
+      
   grafana:
     image: grafana/grafana
     container_name: grafana
@@ -67,9 +70,9 @@ services:
       - CASSANDRA_PASSWORD=admin
     volumes:
       - cassandra-data:/var/lib/cassandra
-networks:
-  kafka-flink-network:
-    driver: bridge
+
+
+
 volumes:
   grafana-storage: {}
   cassandra-data:
