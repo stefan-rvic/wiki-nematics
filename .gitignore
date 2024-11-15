@@ -21,3 +21,5 @@ go.work.sum
 .env
 
 output/
+/processor/target
+*.idea

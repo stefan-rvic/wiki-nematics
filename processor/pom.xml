@@ -20,17 +20,17 @@ under the License.
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.wikinematics.flinkapp</groupId>
-	<artifactId>wikinematics-stream-processor</artifactId>
+	<groupId>com.wn</groupId>
+	<artifactId>processor</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>Flink Quickstart Job</name>
+	<name>processor</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<flink.version>1.20.0</flink.version>
-		<target.java.version>1.8</target.java.version>
+		<target.java.version>11</target.java.version>
 		<scala.binary.version>2.12</scala.binary.version>
 		<maven.compiler.source>${target.java.version}</maven.compiler.source>
 		<maven.compiler.target>${target.java.version}</maven.compiler.target>
@@ -52,8 +52,6 @@ under the License.
 	</repositories>
 
 	<dependencies>
-		<!-- Apache Flink dependencies -->
-		<!-- These dependencies are provided, because they should not be packaged into the JAR file. -->
 		<dependency>
 			<groupId>org.apache.flink</groupId>
 			<artifactId>flink-streaming-java</artifactId>
@@ -67,14 +65,12 @@ under the License.
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- Add connector dependencies here. They must be in the default scope (compile). -->
 
 		<dependency>
 			<groupId>org.apache.flink</groupId>
 			<artifactId>flink-connector-kafka</artifactId>
-			<version>3.3.0-1.20</version>
+			<version>3.0.0-1.17</version>
 		</dependency>
-
 
 		<!-- Add logging framework, to produce console output when running in the IDE. -->
 		<!-- These dependencies are excluded from the application JAR by default. -->
@@ -150,7 +146,7 @@ under the License.
 							<transformers>
 								<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
 								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>com.wikinematics.flinkapp.DataStreamJob</mainClass>
+									<mainClass>com.wn.DataStreamJob</mainClass>
 								</transformer>
 							</transformers>
 						</configuration>
