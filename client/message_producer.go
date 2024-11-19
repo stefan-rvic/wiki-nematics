@@ -20,18 +20,7 @@ func NewMessageProducer[T any](
 	topic string,
 	mapper Mapper[T, kafka.Message],
 	input chan *T) *MessageProducer[T] {
-	
-	for _, broker := range brokers {
-	// create topic if not does not exist
-		conn, err := kafka.DialLeader(context.Background(), "tcp", broker, topic, 0)
-		if err != nil {
-			log.Fatalf("Failed to dial Kafka leader: %v", err) // Handle error if the topic doesn't exist and auto-creation is disabled
-			continue
-		}
-		log.Printf("connected to broker %s for topic %s",broker, topic)
-		defer conn.Close()
-	}
-	
+
 	return &MessageProducer[T]{
 		writer: &kafka.Writer{
 			Addr:         kafka.TCP(brokers...),
