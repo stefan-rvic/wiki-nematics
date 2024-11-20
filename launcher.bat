@@ -28,3 +28,5 @@ docker cp .\processor-1.0-SNAPSHOT.jar job-manager:/opt/flink/usrlib/
 
 echo Running job
 docker exec job-manager /opt/flink/bin/flink run -d /opt/flink/usrlib/processor-1.0-SNAPSHOT.jar
+
+:: todo update with mongodb

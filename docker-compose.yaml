@@ -76,8 +76,21 @@ services:
 #    volumes:
 #      - cassandra-data:/var/lib/cassandra
 
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=adminpassword
+      - MONGO_INITDB_DATABASE=admin
+    command: mongod --auth
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
 
-
+volumes:
+  mongodb_data:
 #volumes:
 #  grafana-storage: {}
 #  cassandra-data:

@@ -66,12 +66,19 @@ under the License.
 			<scope>provided</scope>
 		</dependency>
 
-
+		<!-- Connectors -->
 		<dependency>
 			<groupId>org.apache.flink</groupId>
 			<artifactId>flink-connector-kafka</artifactId>
 			<version>3.0.0-1.17</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-connector-mongodb</artifactId>
+			<version>1.2.0-1.19</version>
+		</dependency>
+
 
 		<!-- Add logging framework, to produce console output when running in the IDE. -->
 		<!-- These dependencies are excluded from the application JAR by default. -->
