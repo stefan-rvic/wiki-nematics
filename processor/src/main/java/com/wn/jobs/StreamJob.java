@@ -25,8 +25,8 @@ public class StreamJob {
 
         MongoSink<BsonDocument> sink = MongoSink.<BsonDocument>builder()
                 .setUri("mongodb://admin:adminpassword@localhost:27017/admin?authSource=admin")
-                .setDatabase("wiki_changes")
-                .setCollection("RT_CHANGES")
+                .setDatabase("wiki_stream")
+                .setCollection("CHANGES")
                 .setSerializationSchema(
                         (MongoSerializationSchema<BsonDocument>) (element, sinkContext) -> new InsertOneModel<>(element))
                 .build();

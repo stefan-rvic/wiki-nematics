@@ -32,7 +32,7 @@ public class RecentChangeStreamJob {
 
 		MongoSink<Long> sink = MongoSink.<Long>builder()
 				.setUri("mongodb://admin:adminpassword@localhost:27017/admin?authSource=admin")
-				.setDatabase("wiki_changes")
+				.setDatabase("wiki_stream")
 				.setCollection("COUNT")
 				.setSerializationSchema(
 						(MongoSerializationSchema<Long>) (element, sinkContext) -> {
