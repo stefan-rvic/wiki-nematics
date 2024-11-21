@@ -50,7 +50,7 @@ public class RecentChangeStreamJob {
 				.keyBy(rc -> "all")
 				.window(TumblingProcessingTimeWindows.of(Duration.ofSeconds(10)))
 				.apply(new WindowedCounter())
-				.map(new LogFunction<Long>().setGenerator(count -> String.format("counted %d changes in 10 seconds", count)))
+				.map(new LogFunction<Long>().setGenerator(count -> String.format("flink processed %d changes in 10 seconds", count)))
 				.sinkTo(sink);
 
 		env.execute("Wikipedia Change Stream Job");
