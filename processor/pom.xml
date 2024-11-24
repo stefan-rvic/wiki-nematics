@@ -136,7 +136,6 @@ under the License.
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>3.6.0</version>
 				<executions>
-					<!-- First job -->
 					<execution>
 						<id>recent-change-stream</id>
 						<phase>package</phase>
@@ -168,43 +167,6 @@ under the License.
 								<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
 								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<mainClass>com.wn.jobs.RecentChangeStreamJob</mainClass>
-								</transformer>
-							</transformers>
-						</configuration>
-					</execution>
-
-<!--					 Second job -->
-					<execution>
-						<id>stream-job</id>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-						<configuration>
-							<finalName>stream-job</finalName>
-							<createDependencyReducedPom>false</createDependencyReducedPom>
-							<artifactSet>
-								<excludes>
-									<exclude>org.apache.flink:flink-shaded-force-shading</exclude>
-									<exclude>com.google.code.findbugs:jsr305</exclude>
-									<exclude>org.slf4j:*</exclude>
-									<exclude>org.apache.logging.log4j:*</exclude>
-								</excludes>
-							</artifactSet>
-							<filters>
-								<filter>
-									<artifact>*:*</artifact>
-									<excludes>
-										<exclude>META-INF/*.SF</exclude>
-										<exclude>META-INF/*.DSA</exclude>
-										<exclude>META-INF/*.RSA</exclude>
-									</excludes>
-								</filter>
-							</filters>
-							<transformers>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>com.wn.jobs.StreamJob</mainClass>
 								</transformer>
 							</transformers>
 						</configuration>
