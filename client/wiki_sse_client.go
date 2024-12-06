@@ -9,13 +9,13 @@ import (
 )
 
 type Length struct {
-	Old *int `json:"old"`
-	New *int `json:"new"`
+	Old *int64 `json:"old"`
+	New *int64 `json:"new"`
 }
 
 type Revision struct {
-	Old *int `json:"old"`
-	New *int `json:"new"`
+	Old *int64 `json:"old"`
+	New *int64 `json:"new"`
 }
 
 type Meta struct {
@@ -27,17 +27,17 @@ type Meta struct {
 	Stream    string `json:"stream"`
 	Topic     string `json:"topic"`
 	Partition int    `json:"partition"`
-	Offset    int    `json:"offset"`
+	Offset    int64  `json:"offset"`
 }
 
 type RecentChange struct {
-	ID               *int   `json:"id"`
+	ID               *int64 `json:"id"`
 	Type             string `json:"type"`
 	Title            string `json:"title"`
 	Namespace        int    `json:"namespace"`
 	Comment          string `json:"comment"`
 	ParsedComment    string `json:"parsedcomment"`
-	Timestamp        int    `json:"timestamp"`
+	Timestamp        int64  `json:"timestamp"`
 	User             string `json:"user"`
 	Bot              bool   `json:"bot"`
 	ServerURL        string `json:"server_url"`
@@ -50,7 +50,7 @@ type RecentChange struct {
 	Length    Length   `json:"length"`
 	Revision  Revision `json:"revision"`
 
-	LogID            *int    `json:"log_id"`
+	LogID            *int64  `json:"log_id"`
 	LogType          *string `json:"log_type"`
 	LogAction        string  `json:"log_action"`
 	LogParams        any     `json:"log_params"`

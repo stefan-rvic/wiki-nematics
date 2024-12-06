@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/segmentio/kafka-go"
-	"time"
 )
 
 type Mapper[From any, To any] interface {
@@ -24,13 +23,7 @@ func (m *RecentChangeMapper) Map(source *RecentChange, destination *kafka.Messag
 		return fmt.Errorf("marshal error: %w", err)
 	}
 
-	destination.Key = []byte(source.Wiki)
 	destination.Value = valueBytes
-	destination.Time = time.Now()
-	destination.Headers = []kafka.Header{
-		{Key: "type", Value: []byte(source.Type)},
-		{Key: "domain", Value: []byte(source.Meta.Domain)},
-	}
 
 	return nil
 }
