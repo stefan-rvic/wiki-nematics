@@ -16,13 +16,13 @@ public class LogFunction<T> implements MapFunction<T, T> {
     private static final long serialVersionUID = 1L;
     private static final Logger LOG = Logger.getLogger(LogFunction.class.getName());
 
-    private SerializableFunction<T, String> generator = Object::toString;
+    private SerializableFunction<T, String> formatter = Object::toString;
 
     private Level level = Level.INFO;
 
     @Override
     public T map(T t) {
-        LOG.log(level, generator.apply(t));
+        LOG.log(level, formatter.apply(t));
         return t;
     }
 }

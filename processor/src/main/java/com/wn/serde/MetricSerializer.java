@@ -53,7 +53,7 @@ public class MetricSerializer implements MongoSerializationSchema<Metric> {
 
             return new InsertOneModel<>(writer.getDocument());
         } catch (Exception e){
-            LOG.log(Level.WARNING, "Could not serialize Metric");
+            LOG.log(Level.WARNING, "Could not serialize Metric" + metric.toString());
             return null;
         }
     }
