@@ -5,6 +5,7 @@ import com.wn.models.metrics.Metric;
 import org.apache.flink.connector.mongodb.sink.writer.context.MongoSinkContext;
 import org.apache.flink.connector.mongodb.sink.writer.serializer.MongoSerializationSchema;
 import org.bson.BsonDocument;
+import org.bson.conversions.Bson;
 
 
 public class MetricSerializer implements MongoSerializationSchema<Metric> {
@@ -15,7 +16,13 @@ public class MetricSerializer implements MongoSerializationSchema<Metric> {
         return new UpdateOneModel<>(
                 Filters.eq("dt", metric.getDt()),
                 Updates.combine(
-                        Updates.inc("count", metric.getCount())),
+                        Updates.inc("count", metric.getCount()),
+                        Updates.combine(
+                                metric.getDomainCount().entrySet().stream()
+                                .map(entry -> Updates.inc("domainCount." + entry.getKey(), entry.getValue()))
+                                .toArray(Bson[]::new)
+                        )
+                ),
                 new UpdateOptions().upsert(true));
     }
 }

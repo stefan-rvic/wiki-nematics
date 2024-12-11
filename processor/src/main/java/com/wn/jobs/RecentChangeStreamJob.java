@@ -2,6 +2,7 @@ package com.wn.jobs;
 
 import com.wn.models.RecentChange;
 import com.wn.models.metrics.Metric;
+import com.wn.operators.CanaryFilter;
 import com.wn.operators.LogFunction;
 import com.wn.operators.RcAggregator;
 import com.wn.serde.MetricSerializer;
@@ -23,7 +24,7 @@ public class RecentChangeStreamJob {
 		final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
 		KafkaSource<RecentChange> source = KafkaSource.<RecentChange>builder()
-				.setBootstrapServers("localhost:9092")
+				.setBootstrapServers("kafka:19092")
 				.setTopics("wikipedia-changes")
 				.setGroupId("flink-consumer-group")
 				.setStartingOffsets(OffsetsInitializer.earliest())
@@ -31,7 +32,7 @@ public class RecentChangeStreamJob {
 				.build();
 
 		MongoSink<Metric> sink = MongoSink.<Metric>builder()
-				.setUri("mongodb://admin:adminpassword@localhost:27017/admin?authSource=admin")
+				.setUri("mongodb://admin:adminpassword@mongodb:27017/admin?authSource=admin")
 				.setDatabase("wiki_stream")
 				.setCollection("CHANGES")
 				.setSerializationSchema(new MetricSerializer())
@@ -48,6 +49,7 @@ public class RecentChangeStreamJob {
 						"Kafka Source")
 				.map(new LogFunction<RecentChange>()
 						.setFormatter(rc -> String.format("received changes from page dated at : %s", rc.getTimestamp().toString())))
+				.filter(new CanaryFilter())
 				.keyBy(rc -> rc
 						.getTimestamp()
 						.truncatedTo(ChronoUnit.MINUTES))

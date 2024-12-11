@@ -24,9 +24,9 @@ start output\client.exe
 echo Copying JAR file to Flink JobManager container...
 cd .\processor\target
 docker exec job-manager mkdir -p /opt/flink/usrlib/
-docker cp .\processor-1.0-SNAPSHOT.jar job-manager:/opt/flink/usrlib/
+docker cp .\recent-change-stream.jar job-manager:/opt/flink/usrlib/
 
 echo Running job
-docker exec job-manager /opt/flink/bin/flink run -d /opt/flink/usrlib/processor-1.0-SNAPSHOT.jar
+docker exec job-manager /opt/flink/bin/flink run -d /opt/flink/usrlib/recent-change-stream.jar
 
 :: todo update with mongodb
