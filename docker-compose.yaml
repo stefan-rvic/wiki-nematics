@@ -56,26 +56,19 @@ services:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
       - TASK_MANAGER_NUMBER_OF_TASK_SLOTS=
 
-#  grafana:
-#    image: grafana/grafana
-#    container_name: grafana
-#    restart: unless-stopped
-#    ports:
-#      - '3000:3000'
-#    volumes:
-#      - grafana-storage:/var/lib/grafana
-#
-#  cassandra:
-#    image: cassandra:latest
-#    container_name: cassandra-container
-#    ports:
-#      - "9042:9042"
-#    environment:
-#      - CASSANDRA_USER=admin
-#      - CASSANDRA_PASSWORD=admin
-#    volumes:
-#      - cassandra-data:/var/lib/cassandra
-
+  grafana:
+    image: ajeje93/grafana-mongodb:latest
+    container_name: grafana
+    ports:
+      - '3000:3000' 
+    depends_on:
+      - mongodb
+      - mongo_proxy
+    restart: unless-stopped
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:rw
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:rw
+      
   mongodb:
     image: mongo:latest
     container_name: mongodb
@@ -89,9 +82,21 @@ services:
     volumes:
       - mongodb_data:/data/db
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      
+  mongo_proxy:
+    image: node:16
+    container_name: mongo_proxy
+    working_dir: /usr/src/app
+    volumes:
+      - ./mongodb-grafana:/usr/src/app
+    ports:
+      - "3333:3333"
+    command: >
+      sh -c "npm install && npm run server"
+    depends_on:
+      - mongodb
+
 
 volumes:
   mongodb_data:
-#volumes:
-#  grafana-storage: {}
-#  cassandra-data:
+  grafana-storage: {}

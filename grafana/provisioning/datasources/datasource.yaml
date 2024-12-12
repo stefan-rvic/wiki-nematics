@@ -1,0 +1,10 @@
+apiVersion: 1
+
+datasources:
+  - name: MongoDB
+    type: grafana-mongodb-opensource-datasource
+    access: proxy
+    url: http://localhost:3333  
+    jsonData:
+      mongodb_db: wiki_stream
+      mongodb_url: mongodb://admin:adminpassword@mongodb:27017/admin?authSource=admin

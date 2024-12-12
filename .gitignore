@@ -24,3 +24,5 @@ output/
 /processor/target
 *.idea
 *.iml
+
+mongodb-grafana
