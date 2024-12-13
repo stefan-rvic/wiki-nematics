@@ -29,6 +29,76 @@
       "fieldConfig": {
         "defaults": {
           "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 9,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.3.1",
+      "targets": [
+        {
+          "hide": false,
+          "rawQuery": true,
+          "refId": "A",
+          "target": "db.CHANGES.aggregate([\n    {\n        \"$match\": {\n            \"dt\": {\n\t\t\t\"$gte\": \"$from\",\n\t\t\t\"$lte\": \"$to\"\n            }\n        }\n    },\n    {\n        \"$group\": {\n            \"_id\": \"$dt\",\n            \"total\": { \"$sum\": \"$count\" }\n        }\n    },\n    {\n        \"$project\": {\n            \"_id\": 0,\n            \"time\": \"$_id\",\n            \"total\": 1\n        }\n    }\n])",
+          "type": "table"
+        }
+      ],
+      "title": "Total changes",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "sum"
+            ]
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mongodb-opensource-datasource",
+        "uid": "P91231FF9AB6685FA"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
             "mode": "palette-classic"
           },
           "custom": {
@@ -84,7 +154,7 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 0,
+        "x": 9,
         "y": 0
       },
       "id": 3,
@@ -105,176 +175,12 @@
         {
           "rawQuery": true,
           "refId": "A",
-          "target": "db.CHANGES.aggregate([\n\t{\n\t\"$match\": {\n\t\t\"dt\": {\n\t\t\t\"$gte\": ISODate(\"2024-12-12T00:00:00.000Z\"),\n\t\t\t\"$lte\": ISODate(\"2024-12-14T23:59:59.999Z\")\n\t\t}\n\t}\n\t},\n\t{\n\t\t\"$group\": {\n\t\t\t\"_id\": \"$dt\",\n\t\t\t\"total_changes\": { \"$sum\": \"$count\" },\n\t\t}\n\t},\n\t{\n\t\t\"$project\": {\n\t\t\t\"_id\": 0,\n\t\t\t\"time\": \"$_id\",\n\t\t\t\"total_changes\": \"$total_changes\"\n\t\t}\n\t}\n\t\n])",
+          "target": "db.CHANGES.aggregate([\n\t{\n\t\"$match\": {\n\t\t\"dt\": {\n\t\t\t\"$gte\": \"$from\",\n\t\t\t\"$lte\": \"$to\"\n\t\t}\n\t}\n\t},\n\t{\n\t\t\"$group\": {\n\t\t\t\"_id\": \"$dt\",\n\t\t\t\"total_changes\": { \"$sum\": \"$count\" },\n\t\t}\n\t},\n\t{\n\t\t\"$project\": {\n\t\t\t\"_id\": 0,\n\t\t\t\"time\": \"$_id\",\n\t\t\t\"total_changes\": \"$total_changes\"\n\t\t}\n\t}\n\t\n])",
           "type": "timeserie"
         }
       ],
       "title": "Panel Title",
       "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "grafana-mongodb-opensource-datasource",
-        "uid": "P91231FF9AB6685FA"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "hidden",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 0
-      },
-      "id": 2,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "timezone": [
-          ""
-        ],
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "11.3.1",
-      "targets": [
-        {
-          "rawQuery": true,
-          "refId": "A",
-          "target": "db.CHANGES.aggregate([\n\t{\n\t\"$match\": {\n\t\t\"dt\": {\n\t\t\t\"$gte\": ISODate(\"2024-12-12T00:00:00.000Z\"),\n\t\t\t\"$lte\": ISODate(\"2024-12-14T23:59:59.999Z\")\n\t\t}\n\t}\n\t},\n\t{\n\t\t\"$group\": {\n\t\t\t\"_id\": \"$dt\",\n\t\t\t\"total_changes\": { \"$sum\": \"$count\" },\n\t\t}\n\t}\n])",
-          "type": "table"
-        }
-      ],
-      "title": "Panel Title",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "grafana-mongodb-opensource-datasource",
-        "uid": "P91231FF9AB6685FA"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 9,
-        "x": 0,
-        "y": 8
-      },
-      "id": 1,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.3.1",
-      "targets": [
-        {
-          "hide": false,
-          "rawQuery": true,
-          "refId": "A",
-          "target": "db.CHANGES.aggregate([\n {\n   $group: {\n     _id: \"$_id\",\n     domainCount: { $mergeObjects: \"$domainCount\" }\n   }\n },\n {\n   $project: {\n     domainGroups: { $objectToArray: \"$domainCount\" }\n   }\n },\n {\n   $unwind: \"$domainGroups\"\n },\n {\n   $group: {\n     _id: \"$domainGroups.k\",\n     total: { $sum: \"$domainGroups.v\" }\n   }\n },\n {\n   $sort: { total: -1 }\n }\n])",
-          "type": "table"
-        }
-      ],
-      "title": "Total changes",
-      "transformations": [
-        {
-          "id": "reduce",
-          "options": {
-            "reducers": [
-              "sum"
-            ]
-          }
-        }
-      ],
-      "type": "stat"
     }
   ],
   "preload": false,
@@ -291,6 +197,6 @@
   "timezone": "browser",
   "title": "Wiki_stream Dashboard",
   "uid": "ae6pgv7e0h91ce",
-  "version": 1,
+  "version": 3,
   "weekStart": ""
 }
