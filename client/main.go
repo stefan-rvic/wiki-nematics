@@ -32,12 +32,18 @@ func main() {
 	sse := NewWikiSseClient(streamURL, changeChan)
 
 	go func() {
-		if err := sse.Start(ctx); err != nil {
-			log.Printf("Stream error: %v", err)
-			cancel() // Cancel the context on error
-			return
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			default:
+				if err := sse.Start(ctx); err != nil {
+					log.Printf("Stream error: %v", err)
+					cancel() // Cancel the context on error
+					return
+				}
+			}
 		}
-		log.Println("SSE client started.")
 	}()
 
 	mapper := &RecentChangeMapper{}

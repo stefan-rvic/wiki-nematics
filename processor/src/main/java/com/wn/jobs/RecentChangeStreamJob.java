@@ -24,7 +24,7 @@ public class RecentChangeStreamJob {
 		final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
 		KafkaSource<RecentChange> source = KafkaSource.<RecentChange>builder()
-				.setBootstrapServers("kafka:19092")
+				.setBootstrapServers("localhost:9092")
 				.setTopics("wikipedia-changes")
 				.setGroupId("flink-consumer-group")
 				.setStartingOffsets(OffsetsInitializer.earliest())
@@ -32,17 +32,18 @@ public class RecentChangeStreamJob {
 				.build();
 
 		MongoSink<Metric> sink = MongoSink.<Metric>builder()
-				.setUri("mongodb://admin:adminpassword@mongodb:27017/admin?authSource=admin")
+				.setUri("mongodb://admin:adminpassword@localhost:27017/admin?authSource=admin")
 				.setDatabase("wiki_stream")
 				.setCollection("CHANGES")
 				.setSerializationSchema(new MetricSerializer())
 				.build();
 
+		long time = 10L;
 		env
 				.fromSource(
 						source,
 						WatermarkStrategy
-								.<RecentChange>forBoundedOutOfOrderness(Duration.ofSeconds(60L))
+								.<RecentChange>forBoundedOutOfOrderness(Duration.ofSeconds(time))
 								.withTimestampAssigner(
 										(SerializableTimestampAssigner<RecentChange>) (rc, l) -> rc.getTimestamp().toEpochMilli())
 								.withIdleness(Duration.ofSeconds(65L)),
@@ -54,7 +55,7 @@ public class RecentChangeStreamJob {
 						.getTimestamp()
 						.truncatedTo(ChronoUnit.MINUTES))
 				.window(TumblingEventTimeWindows
-						.of(Duration.ofSeconds(60L)))
+						.of(Duration.ofSeconds(time)))
 				.aggregate(
 						new RcAggregator(),
 						new RcAggregator.ResultFunction())

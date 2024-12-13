@@ -18,10 +18,19 @@ public class MetricSerializer implements MongoSerializationSchema<Metric> {
                 Updates.combine(
                         Updates.inc("count", metric.getCount()),
                         Updates.combine(
-                                metric.getDomainCount().entrySet().stream()
-                                .map(entry -> Updates.inc("domainCount." + entry.getKey(), entry.getValue()))
-                                .toArray(Bson[]::new)
-                        )
+                                metric
+                                        .getDomainCount()
+                                        .entrySet()
+                                        .stream()
+                                        .map(entry ->
+                                                Updates.inc(
+                                                        "domainCount." + entry.getKey().replace(".", "_"),
+                                                        entry.getValue()))
+                                        .toArray(Bson[]::new)
+                        ),
+                        Updates.inc("bytesChangedCount", metric.getBytesChangedCount()),
+                        Updates.inc("changeCountByBots", metric.getChangeCountByBots()),
+                        Updates.inc("changeCountByHumans", metric.getChangeCountByHumans())
                 ),
                 new UpdateOptions().upsert(true));
     }
