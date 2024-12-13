@@ -42,10 +42,35 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "totalHuman"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Humans"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "totalBot"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Bot"
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 6,
+        "h": 4,
         "w": 9,
         "x": 0,
         "y": 0
@@ -53,7 +78,7 @@
       "id": 1,
       "options": {
         "colorMode": "value",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
         "percentChangeColorMode": "standard",
@@ -64,7 +89,7 @@
           "fields": "",
           "values": false
         },
-        "showPercentChange": false,
+        "showPercentChange": true,
         "textMode": "auto",
         "wideLayout": true
       },
@@ -74,21 +99,11 @@
           "hide": false,
           "rawQuery": true,
           "refId": "A",
-          "target": "db.CHANGES.aggregate([\n    {\n        \"$match\": {\n            \"dt\": {\n\t\t\t\"$gte\": \"$from\",\n\t\t\t\"$lte\": \"$to\"\n            }\n        }\n    },\n    {\n        \"$group\": {\n            \"_id\": \"$dt\",\n            \"total\": { \"$sum\": \"$count\" }\n        }\n    },\n    {\n        \"$project\": {\n            \"_id\": 0,\n            \"time\": \"$_id\",\n            \"total\": 1\n        }\n    }\n])",
+          "target": "db.CHANGES.aggregate([\n    {\n        \"$match\": {\n            \"dt\": {\n\t\t\t\"$gte\": \"$from\",\n\t\t\t\"$lte\": \"$to\"\n            }\n        }\n    },\n    {\n        \"$group\": {\n            \"_id\": \"$dt\",\n            \"total\": { \"$sum\": \"$count\" },\n            \"totalHuman\": { \"$sum\": \"$changeCountByHumans\" },\n            \"totalBot\": { \"$sum\": \"$changeCountByBots\" }\n        }\n    },\n    {\n        \"$project\": {\n            \"_id\": 0,\n            \"time\": \"$_id\",\n            \"totalHuman\": 1,\n            \"totalBot\": 1,\n            \"total\": 1,\n\n        }\n    }\n])",
           "type": "table"
         }
       ],
       "title": "Total changes",
-      "transformations": [
-        {
-          "id": "reduce",
-          "options": {
-            "reducers": [
-              "sum"
-            ]
-          }
-        }
-      ],
       "type": "stat"
     },
     {
@@ -119,13 +134,16 @@
             },
             "insertNulls": false,
             "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
             "lineWidth": 1,
-            "pointSize": 5,
+            "pointSize": 11,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": false,
+            "spanNulls": true,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -141,23 +159,50 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "totalBot"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
+        "h": 11,
+        "w": 15,
         "x": 9,
         "y": 0
       },
-      "id": 3,
+      "id": 5,
       "options": {
         "legend": {
           "calcs": [],
@@ -166,7 +211,7 @@
           "showLegend": true
         },
         "tooltip": {
-          "mode": "none",
+          "mode": "single",
           "sort": "none"
         }
       },
@@ -175,12 +220,151 @@
         {
           "rawQuery": true,
           "refId": "A",
-          "target": "db.CHANGES.aggregate([\n\t{\n\t\"$match\": {\n\t\t\"dt\": {\n\t\t\t\"$gte\": \"$from\",\n\t\t\t\"$lte\": \"$to\"\n\t\t}\n\t}\n\t},\n\t{\n\t\t\"$group\": {\n\t\t\t\"_id\": \"$dt\",\n\t\t\t\"total_changes\": { \"$sum\": \"$count\" },\n\t\t}\n\t},\n\t{\n\t\t\"$project\": {\n\t\t\t\"_id\": 0,\n\t\t\t\"time\": \"$_id\",\n\t\t\t\"total_changes\": \"$total_changes\"\n\t\t}\n\t}\n\t\n])",
+          "target": "db.CHANGES.aggregate([\n    {\n        \"$match\": {\n            \"dt\": {\n\t\t\t\"$gte\": \"$from\",\n\t\t\t\"$lte\": \"$to\"\n            }\n        }\n    },\n    {\n        \"$group\": {\n            \"_id\": \"$dt\",\n            \"total\": { \"$sum\": \"$count\" },\n            \"totalHuman\": { \"$sum\": \"$changeCountByHumans\" },\n            \"totalBot\": { \"$sum\": \"$changeCountByBots\" }\n        }\n    },\n    {\n        \"$project\": {\n            \"_id\": 0,\n            \"time\": \"$_id\",\n            \"totalHuman\": 1,\n            \"totalBot\": 1,\n            \"total\": 1,\n\n        }\n    }\n])",
+          "type": "table"
+        }
+      ],
+      "title": "Bot vs humans edits",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mongodb-opensource-datasource",
+        "uid": "P91231FF9AB6685FA"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 1000
+              },
+              {
+                "color": "#EF843C",
+                "value": 1000000
+              },
+              {
+                "color": "#E24D42",
+                "value": 1000000000
+              }
+            ]
+          },
+          "unit": "decbits"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 9,
+        "x": 0,
+        "y": 4
+      },
+      "id": 4,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto",
+        "text": {}
+      },
+      "pluginVersion": "11.3.1",
+      "targets": [
+        {
+          "rawQuery": true,
+          "refId": "A",
+          "target": "db.CHANGES.aggregate([\n    {\n        \"$match\": {\n            \"dt\": {\n\t\t\t\"$gte\": \"$from\",\n\t\t\t\"$lte\": \"$to\"\n            }\n        }\n    },\n    {\n        \"$group\": {\n            \"_id\": \"$dt\",\n            \"average\": { \"$avg\": \"$bytesChangedCount\" }\n        }\n    },\n    {\n        \"$project\": {\n            \"_id\": 0,\n            \"time\": \"$_id\",\n            \"average\": 1\n        }\n    }\n])",
           "type": "timeserie"
         }
       ],
-      "title": "Panel Title",
-      "type": "timeseries"
+      "title": "Average byte change",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "grafana-mongodb-opensource-datasource",
+        "uid": "P91231FF9AB6685FA"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-BlYlRd"
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 11
+      },
+      "id": 6,
+      "options": {
+        "displayMode": "gradient",
+        "legend": {
+          "calcs": [],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 0,
+        "minVizHeight": 18,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "limit": 10,
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.3.1",
+      "targets": [
+        {
+          "rawQuery": true,
+          "refId": "A",
+          "target": "db.CHANGES.aggregate([\n    {\n        \"$match\": {\n            \"dt\": { \n                \"$gte\": \"$from\", \n                \"$lte\": \"$to\"\n            }\n        }\n    },\n    {\n        \"$project\": {\n            \"domainCountsArray\": {\n                \"$objectToArray\": \"$domainCount\"\n            }\n        }\n    },\n    {\n        \"$unwind\": \"$domainCountsArray\"\n    },\n    {\n        \"$group\": {\n            \"_id\": \"$domainCountsArray.k\",\n            \"total\": {\n                \"$sum\": \"$domainCountsArray.v\"\n            }\n        }\n    },\n    {\n        \"$sort\": {\n            \"total\": -1\n        }\n    },\n    {\n        \"$group\": {\n            \"_id\": null,\n            \"domainCounts\": {\n                \"$push\": {\n                    \"$arrayToObject\": [[{ \"k\": \"$_id\", \"v\": \"$total\" }]]\n                }\n            }\n        }\n    },\n    {\n        \"$project\": {\n            \"_id\": 0,\n            \"domainCounts\": {\n                \"$reduce\": {\n                    \"input\": \"$domainCounts\",\n                    \"initialValue\": {},\n                    \"in\": { \"$mergeObjects\": [\"$$value\", \"$$this\"] }\n                }\n            }\n        }\n    },\n    {\n        \"$replaceRoot\": {\n            \"newRoot\": \"$domainCounts\"\n        }\n    }\n])",
+          "type": "timeserie"
+        }
+      ],
+      "title": "Top 10 most edited domains",
+      "type": "bargauge"
     }
   ],
   "preload": false,
@@ -197,6 +381,6 @@
   "timezone": "browser",
   "title": "Wiki_stream Dashboard",
   "uid": "ae6pgv7e0h91ce",
-  "version": 3,
+  "version": 1,
   "weekStart": ""
 }

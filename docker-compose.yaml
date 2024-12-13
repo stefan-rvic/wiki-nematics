@@ -84,7 +84,7 @@ services:
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
       
   mongo_proxy:
-    image: node:16
+    image: node:16-alpine
     container_name: mongo_proxy
     working_dir: /usr/src/app
     volumes:
