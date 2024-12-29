@@ -14,7 +14,11 @@ func main() {
 		topic     = "wikipedia-changes"
 	)
 
-	brokers := []string{"localhost:9092"}
+	brokerEnv := os.Getenv("KAFKA_BROKERS")
+	if brokerEnv == "" {
+		panic("KAFKA_BROKERS environment variable is not set")
+	}
+	brokers := strings.Split(brokerEnv, ",")
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
